@@ -1,6 +1,6 @@
 // Destructuring
 const numbers2 = [1, 2, 3]
-const [a, b, c] = numbers1 // a === 1, b === 2, c === 3
+const [a, b, c] = numbers2 // a === 1, b === 2, c === 3
 
 const [x1, y1] = numbers2 // x === 1, y === 2
 
