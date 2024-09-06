@@ -1,0 +1,26 @@
+{
+  "name": "uno",
+  "version": "0.0.1",
+  "description": "Uno",
+  "main": "index.js",
+  "keywords": [
+    "uno",
+    "oo",
+    "functional"
+  ],
+  "author": "Ole Ildsgaard Hougaard",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://bitbucket.org/olehougaard/uno/issues"
+  },
+  "homepage": "https://bitbucket.org/olehougaard/uno#readme",
+  "dependencies": {
+    "@babel/core": "^7.24.6",
+    "@babel/preset-env": "^7.24.6",
+    "@babel/preset-typescript": "^7.24.6",
+    "babel-jest": "^29.7.0",
+    "jest": "^29.7.0",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.4.5"
+  }
+}
