@@ -23,11 +23,11 @@ function statusText(code: StatusCodes[StatusCodeKeys]): StatusCodeKeys | undefin
 type Keys = 'ok' | 'Not Found' | 'Internal Server Error'
 
 type StatusCodes1 = {
-    [key in Keys]: number 
+    readonly [key in Keys]: number 
 }
 
-type StatusCodeExplanations = {
-    [key in keyof StatusCodes]: string
+type StatusCodesHandler = {
+    readonly [key in keyof StatusCodes]: (code: StatusCodes[key]) => void
 }
 
 function getter<T extends {}, K extends keyof T>(obj: T, k: K): () => T[K] {
