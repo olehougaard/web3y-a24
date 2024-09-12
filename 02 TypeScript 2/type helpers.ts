@@ -17,7 +17,7 @@ type A = PrimitiveArray<string | number | Object>
 
 type B = PrimitiveArray<boolean>
 
-type FieldType<T, K extends string | symbol> = T extends { [key in K]: infer U }? U : never
+type FieldType<T, K extends string | symbol | number> = T extends { [key in K]: infer U }? U : never
 
 type LoadingState = { status: 'loading', percentComplete: number }
 type FailedState = { status: 'failed', statusCode : number }
