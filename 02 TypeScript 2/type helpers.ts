@@ -26,4 +26,4 @@ type OkState = { status: 'ok', payload: number[] }
 type State = LoadingState | FailedState | OkState
 
 type X = FieldType<State, 'status'>
-type Y = FieldType<State, 'statusCode'>
+type Y = FieldType<State, 'statusCode' | 'payload'>
