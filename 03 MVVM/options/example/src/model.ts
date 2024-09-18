@@ -20,23 +20,29 @@ export type DataFilter = (d:Data) => boolean
 export type Model = {
     personData(): Data[]
     personById(id: number): Person | undefined
-    updatePerson(p: Person): Model
-    hire(p: Person, salary: number): Model
-    addEmployee(e: Employee): Model
-    filtered(filter: DataFilter): Model
-    all(): Model
+    updatePerson(p: Person): void
+    hire(p: Person, salary: number): void
+    addEmployee(e: Employee): void
 }
 
-export const createModel = (persons: Person[], employees: Employee[], filter: (_:Data) => boolean = () => true): Model => {
-    const employeeMap: { [eId: number]: Employee } = {}
-    employees.forEach(e => employeeMap[e.employeeId] = e)
+class ModelImplementation implements Model {
+    private persons: Person[]
+    private employees: Employee[]
+    private employeeMap: {[eId: number]: Employee}
 
-    const personData: () => Data[] = () => persons
-        .map(p => (p.employeeId === undefined? p : { ...p, ...employeeMap[p.employeeId]}))
-        .filter(filter)
+    constructor(persons: Person[], employees: Employee[]) {
+        this.persons = [...persons]
+        this.employees = [...employees]
+        this.employeeMap = {}
+        this.employees.forEach(e => this.employeeMap[e.employeeId] = e)
+    }
 
-    const personById = (id: number) => {
-        for(let person of persons) {
+    personData(): Data[] { 
+        return this.persons.map(p => (p.employeeId === undefined? p : { ...p, ...this.employeeMap[p.employeeId]}))
+    }
+
+    personById(id: Number): Person | undefined {
+        for(let person of this.persons) {
             if (person.id === id) {
                 return person
             }
@@ -44,24 +50,29 @@ export const createModel = (persons: Person[], employees: Employee[], filter: (_
         return undefined       
     }
 
-    const updatePerson: (p:Person) => Model = p => createModel(persons.map(pp => p.id == pp.id? p : pp), employees, filter)
-    const hire: (p: Person, salary: number) => Model = (p, salary) => {
-        const maxId = employees.reduce((max, {employeeId}) => employeeId > max? employeeId : max, 0)
+    updatePerson(p:Person): void {
+        this.persons = this.persons.map(pp => p.id == pp.id? p : pp)
+    }
+
+     hire(p: Person, salary: number): void {
+        const maxId = this.employees.reduce((max, {employeeId}) => employeeId > max? employeeId : max, 0)
         const employeeId = maxId + 1
         const employee: Employee = {
             employeeId: employeeId,
             salary,
             manager: false
         }
-        return updatePerson({...p, employeeId}).addEmployee(employee)
+        this.updatePerson({...p, employeeId})
+        this.addEmployee(employee)
     }
-    const addEmployee: (e:Employee) => Model = e => createModel(persons, employees.concat(e), filter)
 
-    const filtered: (f:DataFilter) => Model = filter => createModel(persons, employees, filter )
-    const all: () => Model = () => createModel(persons, employees)
-
-    return { personData, updatePerson, personById, hire, addEmployee, filtered, all }
+    addEmployee(e: Employee): void {
+        this.employees.push(e)
+        this.employeeMap[e.employeeId] = e
+    }
 }
+
+export const createModel = (persons: Person[], employees: Employee[]): Model => new ModelImplementation(persons, employees)
 
 export const persons: Person[] = [
     { id: 1, name: 'John Doe' },

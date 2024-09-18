@@ -1,11 +1,11 @@
 <script setup lang="ts">
   import {persons, employees, createModel} from './model'
-  import { ref } from 'vue'
+  import { ref, reactive, computed } from 'vue'
 
-  let model = createModel(persons, employees)
+  const model = reactive(createModel(persons, employees))
 
   const salary = ref(0)
-  const personData = ref(model.personData())
+  const personData = computed(() => model.personData())
   const error = ref<string|undefined>(undefined)
 
   function hire(id: number) {
@@ -22,8 +22,7 @@
       error.value = 'Salary must be positive'
       return
     }
-    model = model.hire(person, this.salary)
-    personData.value = model.personData()
+    model.hire(person, this.salary)
     salary.value = 0
     error.value = undefined
   }

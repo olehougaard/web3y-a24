@@ -2,17 +2,20 @@
   import {persons, employees, createModel} from './model'
   import { defineComponent } from 'vue'
 
-  let model = createModel(persons, employees)
-
   export default defineComponent({ 
-    data: () => ({
-      salary: 0,
-      personData: model.personData(),
-      error: undefined
-    }),
+    data() {
+      return {
+        model: createModel(persons, employees),
+        salary: 0,
+        error: undefined
+      }
+    },
+    computed: {
+      personData() { return this.model.personData() }
+    },
     methods: {
       hire(id: number) {
-        const person = model.personById(id)
+        const person = this.model.personById(id)
         if (person === undefined) {
           this.error = 'No person selected'
           return
@@ -25,8 +28,7 @@
           this.error = 'Salary must be positive'
           return
         }
-        model = model.hire(person, this.salary)
-        this.personData = model.personData()
+        this.model.hire(person, this.salary)
         this.salary = 0
         this.error = undefined
       }
