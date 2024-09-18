@@ -8,5 +8,6 @@
     "preserveValueImports": false,
     "importsNotUsedAsValues": "remove",
     "verbatimModuleSyntax": true,
+    
   }
 }
