@@ -9,7 +9,7 @@
     // Overriding deprecated flags from Vue
     "preserveValueImports": false,
     "importsNotUsedAsValues": "remove",
-    "verbatimModuleSyntax": true,
+    "verbatimModuleSyntax": false,
   },
 
   "references": [

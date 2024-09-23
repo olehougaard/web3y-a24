@@ -4,12 +4,7 @@
   import { store } from '@/api/store';
   const model = store()
 
-  const props = defineProps({
-    gameNumber: {
-      type: Number,
-      required: true
-    }
-  })
+  const props = defineProps<{gameNumber: number}>()
 
   async function waitForPlayer() {
     const game = await api.readGame(props.gameNumber)

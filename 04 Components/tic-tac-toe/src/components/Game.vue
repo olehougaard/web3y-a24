@@ -5,16 +5,10 @@
   import ActiveGameView from '@/components/ActiveGame.vue'
   import FinishedGameView from '@/components/FinishedGame.vue'
 
-  const props = defineProps({
-    player: {
-      type: Object as PropType<Player>,
-      required: true
-    },
-    game: {
-      type: Object as PropType<Game>,
-      required: true
-    }
-  })
+  const props = defineProps<{
+    player: Player,
+    game: Game
+  }>()
 
   const current = ref(props.game)
 

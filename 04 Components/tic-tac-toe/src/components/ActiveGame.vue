@@ -4,16 +4,10 @@
   import * as api from '@/api/api'
   import BoardView from '@/components/Board.vue'
 
-  const props = defineProps( {
-    player: {
-      type: Object as PropType<Player>,
-      required: true
-    },
-    game: {
-      type: Object as PropType<Game>,
-      required: true
-    }
-  })
+  const props = defineProps<{
+    player: Player,
+    game: Game
+  }>()
 
   let current = ref(props.game)
 

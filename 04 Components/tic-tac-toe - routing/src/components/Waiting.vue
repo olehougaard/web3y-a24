@@ -1,5 +1,5 @@
 <script setup lang="ts">
-  import { defineProps, onMounted, inject } from 'vue'
+  import { onMounted, inject } from 'vue'
   import type { Player } from '@/api/model'
   import { model } from '@/api/store'
   import type { API } from '@/api/api'

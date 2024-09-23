@@ -4,16 +4,10 @@
   import type { PropType } from 'vue'
   import { defineProps, defineEmits, onMounted } from 'vue'
 
-  const props = defineProps({
-    player: {
-        type: Object as PropType<Player>,
-        required: true
-    },
-    game: {
-      type: Object as PropType<Game>,
-      required: true
-    }
-  })
+  const props = defineProps<{
+    player: Player,
+    game: Game
+  }>()
 
   const emit = defineEmits(['gameStarted'])
 

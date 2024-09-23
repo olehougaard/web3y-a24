@@ -1,19 +1,13 @@
 <script setup lang="ts">
   import type { Board } from '@/api/model'
-  import { defineEmits, defineProps, type PropType } from 'vue'
+  import { defineEmits, defineProps } from 'vue'
 
   type Tile = { x: number, y: number, piece: 'X' | 'O' | null }
 
-  const props = defineProps({
-    enabled: {
-      type: Boolean,
-      required: true
-    },
-    board: {
-      type: Object as PropType<Board>,
-      required: true
-    }
-  })
+  const props = defineProps<{
+    enabled: boolean,
+    board: Board
+  }>()
 
   const emit = defineEmits({
     click(x: number, y: number) {

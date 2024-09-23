@@ -3,12 +3,9 @@
   import { ref, defineEmits, defineProps } from 'vue'
   import type { PropType } from 'vue'
 
-  defineProps({
-    personData: {
-      type: Object as PropType<Data[]>,
-      required: true
-    }
-  })
+  defineProps<{
+    personData: Data[]
+  }>()
 
   let emit = defineEmits({
     hire(_: number) {

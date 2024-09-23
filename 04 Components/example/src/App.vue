@@ -30,7 +30,7 @@
 <template>
     <h1>People</h1>
     <div id='base'>
-      <person-view :person-data="model.personData()" @hire="hire"></person-view>
+      <person-view :person-data="model.personData()" @hire="id=>hire(id)"></person-view>
       <div>Salary: <input v-model='salary' id='salary'></div>
       <div>{{error}}</div>
     </div>
