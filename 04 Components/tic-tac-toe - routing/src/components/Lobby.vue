@@ -3,11 +3,12 @@
   import { ref, onBeforeMount, onUnmounted, inject } from 'vue'
   import { model } from '../api/store'
   import type { API } from '../api/api'
-  import {useRouter} from 'vue-router'
-
-  const router = useRouter()
-
+  import {type Router} from 'vue-router'
+  
+  const useRouter = inject<() => Router>('useRouter')
   const api = inject<API>('api')
+  
+  const router = useRouter()
 
   const games = ref([] as Game[])
 

@@ -5,21 +5,40 @@ import { mount } from '@vue/test-utils'
 import Lobby from '../src/components/Lobby.vue'
 
 describe("lobby", () => {
-    const game = { gameNumber: 7, gameName:'test game', board: [[]], ongoing: false, inTurn: 'X'}
-    function readGamesList() {
-        return [game]
+    const router = {
+        push(path: string) {}
+    }
+
+    function useRouter() {
+        return router
+    }
+
+    function create_api() {
+        let joined = -1
+        const game = { gameNumber: 7, gameName:'test game', board: [[]], ongoing: false, inTurn: 'X'}
+    
+        return {
+            game() {
+                return game
+            },
+            joined() {
+                return joined
+            },
+            readGamesList() {
+                return [game]
+            },
+            joinGame(gameNumber: number) { 
+                joined = gameNumber 
+                return game
+            },
+        }
     }
 
     it("displays the games from the server", async () => {
-        const api = {
-            readGamesList
-        }
-
+        const api = create_api()
         const wrapper = mount(Lobby, {
             global: {
-                provide: {
-                    'api': api
-                }
+                provide: {api, useRouter}
             }
         })
 
@@ -29,25 +48,20 @@ describe("lobby", () => {
     })
 
     it("calls the server with a click on join", async () => {
-        let joined = -1
-        const api = {
-            readGamesList,
-            joinGame(gameNumber: number) { joined = gameNumber }
-
-        }
-
+        const api = create_api()
+        
         const wrapper = mount(Lobby, {
             global: {
-                provide: {api}
+                provide: {api, useRouter}
             }
         })
 
         await nextTick()
 
-        wrapper.find(`#join${game.gameNumber}`).trigger('click')
+        wrapper.find(`#join${api.game().gameNumber}`).trigger('click')
 
         await nextTick()
 
-        expect(joined).toBe(game.gameNumber)
+        expect(api.joined()).toBe(api.game().gameNumber)
     })
 })
