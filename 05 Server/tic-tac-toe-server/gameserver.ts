@@ -28,23 +28,24 @@ const gameserver: Express = express()
 /*
 A raw body parser. Better to use the body-parser middleware.
 
-gameserver.use (function(req, _, next) {
+gameserver.use ((req, _, next) => {
     req.setEncoding('utf8')
     req.body = new Promise(resolve => {
         let data=''
-        req.on('data', function(chunk) { 
+        req.on('data', (chunk) => { 
             data += chunk
          })
      
-         req.on('end', function() {
+         req.on('end', () => {
              resolve(data)
              next();
          })
     })
 })
+
 */
 
-gameserver.use(function(_, res, next) {
+gameserver.use((_, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     res.header("Access-Control-Allow-Methods", "GET, POST, PATCH");
@@ -66,10 +67,15 @@ gameserver.post('/games', async (req: TypedRequest<{gameName?: string}>, res: Re
     res.send({...game.data(), ongoing: false})
 })
 
-gameserver.get('/games', (_, res) => {
-    res.send(games
-        .filter(g => !ongoing_games[g.gameNumber])
-        .map(g => ({...g.data(), ongoing: false})))
+gameserver.get('/games', (req: TypedRequest<{gameName?: string}>, res: Response<ExtendedGameData[]>) => {
+    const allGames = games
+    .filter(g => !ongoing_games[g.gameNumber])
+    .map(g => ({ ...g.data(), ongoing: false }))
+    if (req.query.finished) {
+        res.send(allGames.filter(g => g.winState !== undefined))        
+    } else {
+        res.send(allGames)
+    }
 })
 
 gameserver.get('/games/:gameNumber', (req: Request, res: Response) => {
