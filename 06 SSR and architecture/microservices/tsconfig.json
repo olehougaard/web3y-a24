@@ -1,0 +1,17 @@
+{
+  "include": ["**/*"],
+  "exclude": ["node_modules"],
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  },
+  "compilerOptions": {
+    "lib": ["es2023", "dom"],
+    "module": "NodeNext",
+    "target": "es2022",
+    "outDir": "./dist/",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "moduleResolution": "NodeNext"
+  }
+}

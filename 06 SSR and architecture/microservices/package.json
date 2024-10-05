@@ -5,13 +5,16 @@
   "author": "Ole I Hougaard",
   "license": "ISC",
   "description": "",
+  "type": "module",
   "dependencies": {
+    "amqplib": "^0.10.4",
     "body-parser": "^1.20.3",
     "express": "^4.21.0",
-    "mongodb": "^6.9.0",
-    "typescript": "^5.6.2"
+    "mongodb": "^6.9.0"
   },
   "devDependencies": {
-    "@types/express": "^5.0.0"
+    "@types/amqplib": "^0.10.5",
+    "@types/express": "^5.0.0",
+    "typescript": "^5.6.2"
   }
 }
