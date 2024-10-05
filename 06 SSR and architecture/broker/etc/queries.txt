@@ -1,0 +1,41 @@
+query ExampleQuery($cpr: String!) {
+  diagnoses(cpr: $cpr) {
+    diagnose
+    id
+  }
+  patients {
+    cpr
+    prescriptions {
+      drugId
+    }
+  }
+}
+{
+  "cpr": "2112568901"
+}
+
+
+mutation Diagnose($cpr: String!, $diagnosis: DiagnosisInput!) {
+  diagnose(cpr: $cpr, diagnosis: $diagnosis) {
+    id
+    diagnose
+  }
+}
+{
+  "cpr": "2112568901",
+  "diagnosis": {"diagnose": "Muscle pain"}
+}
+
+mutation Prescribe($cpr: String!, $prescription: PrescriptionInput!) {
+  prescribe(cpr: $cpr, prescription: $prescription) {
+    id
+    drugId
+  }
+}
+{
+  "cpr": "2112568901",
+  "prescription": {
+    "drugId": "34522",
+    "units": 2
+  }
+}

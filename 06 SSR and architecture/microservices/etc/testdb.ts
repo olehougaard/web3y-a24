@@ -7,6 +7,9 @@ async function createTestData() {
     try {
         const client = await mongo.connect()
         const db = client.db('test')
+
+        const collections = ['medicine.drugs', 'medicine.diagnoses', 'medicine.prescriptions', 'journal.patients', 'journal.diagnoses']
+        collections.forEach(c => db.collection(c).deleteMany())
         
         await db.collection('medicine.drugs').insertMany([
             {
@@ -25,21 +28,6 @@ async function createTestData() {
             }
         ])
 
-        await db.collection('medicine.diagnoses').insertOne({
-            cpr: '2112568901',
-            diagnoses: ['Headache', 'Inflammation']
-        })
-
-        await db.collection('medicine.prescriptions').insertOne({
-            cpr: '2112568901',
-            drug_id: 12345,
-            dosage: {
-                period: 'daily',
-                administrations: 3,
-                units: 2
-            }
-        })
-
         await db.collection('journal.patients').insertOne({
             cpr: '2112568901',
             name: '',
@@ -47,19 +35,12 @@ async function createTestData() {
             birthdate: ''
         })
 
-        await db.collection('journal.diagnoses').insertMany([
-            {
-                cpr: '2112568901',
-                diagnose: 'Headache',
-                diagnosedOn: '',
-                diagnosedBy: ''
-            },
-            {
-                cpr: '2112568901',
-                diagnose: 'Inflammation',
-                diagnosedOn: '',
-                diagnosedBy: ''
-        }])
+        await db.collection('journal.diagnoses').insertOne({
+            cpr: '2112568901',
+            diagnose: 'Headache',
+            diagnosedOn: '',
+            diagnosedBy: ''
+        })
     } catch (e) {
         console.trace(e)
     } finally {

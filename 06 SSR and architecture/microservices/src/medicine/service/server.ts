@@ -1,13 +1,32 @@
 import express, { Response } from 'express'
 import bodyParser from 'body-parser'
-import { injectMongo } from '../../db/inject-mongo.js'
+import { connectionString, injectMongo } from '../../db/inject-mongo.js'
 import { PrescriptionSystem, prescriptionSystem } from '../prescriptions.js'
 import * as amqp from 'amqplib'
+import { Diagnosis } from '../../journal/patients.js'
+import { MongoClient } from 'mongodb'
 
 async function startServer() {
     const connection = await amqp.connect('amqp://localhost')
     const channel = await connection.createChannel()
     await channel.assertExchange('diagnoses', 'fanout', {durable: false})
+
+    const queue = await channel.assertQueue('', {exclusive: true})
+    await channel.bindQueue(queue.queue, 'diagnoses', '')
+
+    channel.consume(queue.queue, async msg => {
+        let diagnosis: Diagnosis = JSON.parse(msg.content.toString())
+        const client = new MongoClient(connectionString);
+        await client.connect()
+        const db = client.db('test')
+        db.collection('medicine.diagnoses').updateOne({
+            cpr: diagnosis.cpr
+        }, {
+            $push: {diagnoses: diagnosis.diagnose}
+        }, {
+            upsert: true
+        })
+    })
 
     const medicineServer = express()
     
@@ -38,9 +57,9 @@ async function startServer() {
     medicineServer.post('/prescriptions', async (req, res) => {
         try {
             const pres = await localSystem(res).prescribe(req.body.cpr, req.body);
-            channel.publish('diagnoses', '', Buffer.from(JSON.stringify(pres)))
             res.status(201).send(pres)
         } catch (e) {
+            console.trace(e)
             res.status(409).send()
         }
     })

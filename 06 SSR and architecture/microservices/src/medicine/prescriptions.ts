@@ -42,15 +42,15 @@ export interface PrescriptionSystem {
 export function prescriptionSystem(db: Db): PrescriptionSystem {
     return {
         async prescriptions(cpr: string) {
-            const prescriptionsForPatient: FindCursor<Document> = db.collection('medicine.diagnoses').find({ cpr })
+            const prescriptionsForPatient: FindCursor<Document> = db.collection('medicine.prescriptions').find({ cpr })
             return prescriptionsForPatient.toArray()
         },
         async prescribe(cpr: string, prescription: Prescription) {
             const patientDiagnoses: string[] = await db.collection('medicine.diagnoses').findOne({cpr}).then(p => p?.diagnoses)
-            const eligibleDrug = await db.collection('medicine.drugs').findOne({drug_id: prescription.drug_id, indications: patientDiagnoses})
+            const eligibleDrug = await db.collection('medicine.drugs').findOne({drug_id: prescription.drug_id, indications: {$in: patientDiagnoses}})
             if (!eligibleDrug) throw new Error('Drug is not indicated')
             const fullPrescription = { ...prescription, cpr };
-            await db.collection('medicine.diagnoses').insertOne(fullPrescription)
+            await db.collection('medicine.prescriptions').insertOne(fullPrescription)
             return fullPrescription
         },
         async drugs() {

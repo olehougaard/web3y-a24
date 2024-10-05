@@ -1,0 +1,45 @@
+type Diagnosis {
+  id: ID!,
+  diagnose: String!,
+  diagnosedOn: String,
+  diagnosedBy: String
+}
+
+type Prescription {
+  id: ID!,
+  drugId: ID!,
+  period: String,
+  administrations: Int,
+  units: Int!
+}
+
+type Patient {
+  cpr: String!,
+  name: String!,
+  address: String,
+  birthdate: String,
+  prescriptions: [Prescription!]!
+}
+
+type Query {
+  patients: [Patient],
+  diagnoses(cpr: String!): [Diagnosis!]!
+}
+
+input PrescriptionInput {
+  drugId: ID!,
+  period: String,
+  administrations: Int,
+  units: Int!
+}
+
+input DiagnosisInput {
+  diagnose: String!,
+  diagnosedOn: String,
+  diagnosedBy: String
+}
+
+type Mutation {
+  diagnose(cpr: String!, diagnosis: DiagnosisInput!): Diagnosis,
+  prescribe(cpr: String!, prescription: PrescriptionInput!): Prescription
+}

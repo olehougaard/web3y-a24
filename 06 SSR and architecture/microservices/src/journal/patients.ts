@@ -29,7 +29,7 @@ export function patientSystem(db: Db): PatientSystem {
         },
         async diagnose(cpr: string, diagnosis: Diagnosis) {
             const fullDiagnosis = { ...diagnosis, cpr };
-            db.collection('journal.diagnoses').insertOne(fullDiagnosis)
+            await db.collection('journal.diagnoses').insertOne(fullDiagnosis)
             return fullDiagnosis
         },
         async patients() {
