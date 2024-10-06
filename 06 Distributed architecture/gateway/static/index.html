@@ -1,0 +1,25 @@
+<html>
+  <head>
+    <script lang="javascript">
+      async function load() {
+        const contentElement = document.getElementById('content')
+        const headers = { 'Content-Type': 'application/json', Accepts: 'application/json'}
+        const query = `query ExampleQuery($cpr: String!) {
+          diagnoses(cpr: $cpr) {
+            diagnose
+            id
+          }
+        }`
+        const variables = {
+         "cpr": "2112568901"
+        }
+        const json = await fetch('/graphql', {method: 'POST', body: JSON.stringify({query, variables}), headers}).then(res => res.text())
+        const data = JSON.parse(json)
+        contentElement.textContent = data
+      }
+    </script>
+  </head>
+  <body onload="load()">
+    <div id='content'></div>
+  </body>
+</html>

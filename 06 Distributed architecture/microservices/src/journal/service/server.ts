@@ -37,7 +37,8 @@ async function startServer() {
     
     journalServer.post('/patients/:cpr/diagnoses', async (req, res) => {
         const diagnosis = await localPatients(res).diagnose(req.params.cpr, req.body);
-        channel.publish('diagnoses', '', Buffer.from(JSON.stringify(diagnosis)))
+        const bytes = Buffer.from(JSON.stringify(diagnosis));
+        channel.publish('diagnoses', '', bytes)
         res.status(201).send(diagnosis)
     })
     
