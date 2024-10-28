@@ -12,7 +12,7 @@ const pets: Pet[] = [
     {type: 'dog', name: 'Rover', age: 3},
     {type: 'dragon', name: 'Fluffykins', age: 673}] as const
 
-let agesOfPets = R.map(R.prop('age')<Pet>)
+const agesOfPets = R.map(R.prop('age')<Pet>)
 console.log(agesOfPets(pets))
 
 const findDragons = R.filter(R.propEq('dragon', 'type') as (p: Pet) => boolean)
