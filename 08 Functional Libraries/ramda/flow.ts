@@ -24,7 +24,7 @@ const sumOfAgeOfDragons = R.flow(pets, [
 ])
 
 const _sumOfAgeOfDragons = R.flow(pets, [
-  R.filter(R.propEq('type', 'dragon')),
+  R.filter(R.propEq('dragon', 'type')),
   R.map(R.prop('age')<Pet>),
   R.sum
 ])
