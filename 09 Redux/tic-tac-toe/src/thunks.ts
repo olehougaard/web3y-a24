@@ -92,9 +92,9 @@ export function joinGameThunk(gameNumber: number, navigate: NavigateFunction): T
 export function makeMoveThunk(x: number, y: number): Thunk {
     return async function(dispatch: Dispatch, getState: GetState) {
         const state = getState()
-        const {mode, game, player} = state.game
+        const {mode, game: { gameNumber }, player} = state.game
         if (mode === 'playing') {
-            const payload = await api.createMove(game.gameNumber, {x, y, player})
+            const payload = await api.createMove(gameNumber, {x, y, player})
             dispatch(gameSlice.actions.makeMove(payload))
         }
     }
