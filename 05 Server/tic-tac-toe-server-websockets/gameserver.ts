@@ -87,32 +87,33 @@ function startServer(ws: WebSocket) {
     })
 
     gameserver.post('/games/:gameNumber/moves', (req: TypedRequest<Move>, res) => {
-        const gameNumber = parseInt(req.params.gameNumber)
-        if (req.body.conceded) {
-            if (!ongoing_games[gameNumber])
-                res.status(403).send()
-            else {
-                games[gameNumber] = games[gameNumber].conceded()
-                const data = { ...games[gameNumber], ongoing: false }
-                send_message('move_' + gameNumber, {type: 'conceded', ...data})
-                res.send(data)
-            }
-        } else {
-            const { x, y, player } = req.body
-            const game = games[gameNumber]
-            if (!ongoing_games[gameNumber])
-                res.sendStatus(404)
-            else if (player === game.inTurn && game.legalMove(x,y)) {
-                const afterMove = game.makeMove(x, y)
-                games[gameNumber] = afterMove
-                const {inTurn, winState, stalemate} = afterMove
-                const data = { move: { x, y, player: game.inTurn }, inTurn, winState, stalemate }
-                send_message('move_' + gameNumber, {type: 'move', ...data})
-                res.send(data)
-            } else {
-                res.sendStatus(403)
-            }
+      const gameNumber = parseInt(req.params.gameNumber)
+      if (req.body.conceded) {
+        if (!ongoing_games[gameNumber])
+            res.status(403).send()
+        else {
+          games[gameNumber] = games[gameNumber].conceded()
+          const data = { ...games[gameNumber], ongoing: false }
+          const player = req.body.player
+          send_message('move_' + gameNumber, {type: 'conceded', move: {player}, ...data})
+          res.send(data)
         }
+      } else {
+        const { x, y, player } = req.body
+        const game = games[gameNumber]
+        if (!ongoing_games[gameNumber])
+          res.sendStatus(404)
+        else if (player === game.inTurn && game.legalMove(x,y)) {
+          const afterMove = game.makeMove(x, y)
+          games[gameNumber] = afterMove
+          const {inTurn, winState, stalemate} = afterMove
+          const data = { move: { x, y, player: game.inTurn }, inTurn, winState, stalemate }
+          send_message('move_' + gameNumber, {type: 'move', ...data})
+          res.send(data)
+        } else {
+          res.sendStatus(403)
+        }
+      }
     })
 
     gameserver.get('/games/:gameNumber/moves', (req, res) => {

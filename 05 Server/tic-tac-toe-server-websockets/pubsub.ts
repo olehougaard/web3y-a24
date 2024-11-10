@@ -21,12 +21,14 @@ const clientMap = (): ClientMap => {
     }
 
     const subscribe = ({key}: KeyData, ws: WebSocket) => {
+        console.log(key)
         subscribers(key).add(ws)
     }
 
     const unsubscribe = ({key}: KeyData, ws: WebSocket) => subscribers(key).delete(ws)
 
     const send = ({topic, message}: {topic: string, message: {}}, _: WebSocket) => {
+        console.log(topic, message)
         for (let ws of subscribers(topic))
             if (ws.readyState === WebSocket.OPEN) 
                 ws.send(JSON.stringify({topic, message}))

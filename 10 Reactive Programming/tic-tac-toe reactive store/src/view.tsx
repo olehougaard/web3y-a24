@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
 import * as React from 'react';
-import { Provider, useSelector, useDispatch } from 'react-redux'
 import { otherPlayer } from './model';
-import { State, Dispatch } from './store';
-import { concedeThunk, initThunk, joinGameThunk, makeMoveThunk, newGameThunk, gamesListenerThunk, leaveGameThunk } from './thunks';
-import { StoreType } from './store';
+import { State } from './store';
+import { concedeThunk, joinGameThunk, makeMoveThunk, newGameThunk, leaveGameThunk } from './thunks';
 import { createBrowserRouter, RouterProvider, useNavigate } from 'react-router-dom'
 import './view.css';
+import { dispatch, DispatchContext, SelectorContext } from './dispatch';
 
 const Board = ({enabled}: {enabled: boolean}) => {
+  const useSelector = React.useContext(SelectorContext)
   const gameState = useSelector((s: State) => s.game)
   const {board} = gameState.game
-  const dispatch: Dispatch = useDispatch()
+  const dispatch = React.useContext(DispatchContext)
   return (
     <table>
       <tbody>
@@ -20,7 +20,7 @@ const Board = ({enabled}: {enabled: boolean}) => {
               if (tile)
                 return <td key = {x + '' + y} className = { tile }/>
               else if (enabled)
-                return <td key = {x + '' + y} className = {'blank'} onClick = {() => dispatch(makeMoveThunk(x, y))}/>
+                return <td key = {x + '' + y} className = {'blank'} onClick = {() => dispatch(makeMoveThunk(x, y, gameState))}/>
               else
               return <td key = {x + '' + y} className = {'inert'}/>
             })
@@ -37,8 +37,9 @@ const Lobby = () => {
   })
 
   const [ name, setName ] = useState('Name')
+  const useSelector = React.useContext(SelectorContext)
   const games = useSelector((s: State) => s.lobby)
-  const dispatch: Dispatch = useDispatch()
+  const dispatch = React.useContext(DispatchContext)
   const navigate = useNavigate()
 
   return (
@@ -71,16 +72,18 @@ const WaitingForGame = () => {
 }
 
 const Active = () => {
-  const {player} = useSelector((s: State) => s.game)
-  const dispatch: Dispatch = useDispatch()
+  const useSelector = React.useContext(SelectorContext)
+  const game = useSelector((s: State) => s.game)
+  const dispatch = React.useContext(DispatchContext)
   return <div>
-    <h2>Your turn, { player }</h2>
+    <h2>Your turn, { game.player }</h2>
     <Board enabled = {true}/>
-    <button onClick = {() => dispatch(concedeThunk)}>Concede game</button>
+    <button onClick = {() => dispatch(concedeThunk(game))}>Concede game</button>
   </div>
 }
 
 const WaitingForTurn = () => {
+  const useSelector = React.useContext(SelectorContext)
   const {player} = useSelector((s: State) => s.game)
   return <div>
     <h2>Waiting for { otherPlayer(player) }</h2>
@@ -89,11 +92,12 @@ const WaitingForTurn = () => {
 }
 
 const GameOver = () => {
+  const useSelector = React.useContext(SelectorContext)
   const {game} = useSelector((s: State) => s.game)
   useEffect(() => {
     document.title = `Tic-tac-toe - ${game.gameName} complete`
   })
-  const dispatch: Dispatch = useDispatch()
+  const dispatch = React.useContext(DispatchContext)
   const navigate = useNavigate();
   return <div>
     <h1>{game.gameName} complete</h1>
@@ -104,6 +108,7 @@ const GameOver = () => {
 }
 
 const Playing = () => {
+  const useSelector = React.useContext(SelectorContext)
   const {game, player} = useSelector((s: State) => s.game)
   useEffect(() => {
     document.title = `Tic-tac-toe - Playing ${game.gameName}`
@@ -115,8 +120,11 @@ const Playing = () => {
 }
 
 const GamePage = () => {
+  const useSelector = React.useContext(SelectorContext)
   const {game} = useSelector((s: State) => s.game)
-  if (game.winState || game.stalemate)
+  if (!game) 
+    return <h1>Loading...</h1>
+  else if (game.winState || game.stalemate)
     return <GameOver/>
   else
     return <Playing/>
@@ -137,12 +145,15 @@ const router = createBrowserRouter([
   },
 ])
 
-export const View = ({store}: {store: StoreType}) => {
-  useEffect(() => {
-    store.dispatch(initThunk)
-    store.dispatch(gamesListenerThunk)
-  }, [])
-  return <Provider store={store}>
-      <RouterProvider router={router}/>
-  </Provider>
+export const View = ({state}: {state: State}) => {
+  function selector<T>(f: (s: State) => T) {
+    return f(state)
+  }
+  return (
+    <DispatchContext.Provider value={dispatch}>
+      <SelectorContext.Provider value={selector}>
+        <RouterProvider router={router}/>
+      </SelectorContext.Provider>
+    </DispatchContext.Provider>
+  )
 }
