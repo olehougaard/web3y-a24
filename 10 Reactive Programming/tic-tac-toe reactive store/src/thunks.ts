@@ -1,9 +1,9 @@
 import { Game, GameState, Player } from "./model";
-import { Dispatch, GetState, lobbySlice, gameSlice, MakeMovePayload } from "./store"
+import { lobbySlice, gameSlice, MakeMovePayload } from "./store"
 import { NavigateFunction } from 'react-router'
 import * as api from "./api";
 import subscriber from "./subscriber"
-import { catchError, concat, filter, from, map, merge, mergeMap, Observable, of, Subject, tap } from "rxjs";
+import { catchError, concat, filter, from, map, merge, mergeMap, Observable, of, tap } from "rxjs";
 import { Thunk } from "./dispatch";
 import { Action } from "@reduxjs/toolkit";
 
