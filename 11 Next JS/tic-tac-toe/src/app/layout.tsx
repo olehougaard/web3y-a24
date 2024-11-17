@@ -17,17 +17,11 @@ export const metadata: Metadata = {
   title: "Tic-tac-toe",
 }
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <h1>Tic-tac-toe</h1>
-        {children}
-      </body>
-    </html>
-  )
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return <html lang="en">
+    <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <h1>Tic-tac-toe</h1>
+      {children}
+    </body>
+  </html>
 }
