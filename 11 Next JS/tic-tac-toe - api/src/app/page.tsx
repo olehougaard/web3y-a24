@@ -2,6 +2,8 @@ import { GamesList } from "@/components/GamesList";
 import { CreateGame } from "@/components/CreateGame";
 import * as api from "@/lib/api"
 
+export const dynamic = 'force-dynamic'
+
 export default async function Home() {
   const games = await api.readGamesList()
   return (
